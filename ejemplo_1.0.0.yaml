@@ -1,0 +1,96 @@
+---
+swagger: "2.0"
+info:
+  x-ibm-name: "ejemplo"
+  title: "ejemplo"
+  version: "1.0.0"
+schemes:
+- "https"
+host: "$(catalog.host)"
+basePath: "/ejemplo"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+securityDefinitions: {}
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  cors:
+    enabled: false
+  assembly:
+    execute:
+    - switch:
+        title: "switch"
+        case:
+        - condition: "request.verb == ('PUT')"
+          execute:
+          - invoke:
+              title: "invoke"
+              timeout: 60
+              verb: "PUT"
+              cache-response: "protocol"
+              cache-ttl: 900
+              version: "1.0.0"
+              target-url: "$(LOCALL)/students/{id}"
+        - condition: "request.verb == ('GET')"
+          execute:
+          - set-variable:
+              title: "set-variable"
+              actions:
+              - set: "message.headers.Content-Type"
+                value: "application/json"
+              version: "1.0.0"
+          - invoke:
+              title: "invoke"
+              timeout: 60
+              verb: "GET"
+              cache-response: "protocol"
+              cache-ttl: 900
+              version: "1.0.0"
+              target-url: "$(LOCALL)/students/{id}"
+        - condition: "request.verb == ('POST')"
+          execute:
+          - invoke:
+              title: "invoke"
+              timeout: 60
+              verb: "POST"
+              cache-response: "protocol"
+              cache-ttl: 900
+              version: "1.0.0"
+              target-url: "$(LOCALL)/students"
+        - condition: "request.verb == ('DELETE')"
+          execute:
+          - invoke:
+              title: "invoke"
+              timeout: 60
+              verb: "DELETE"
+              cache-response: "protocol"
+              cache-ttl: 900
+              version: "1.0.0"
+              target-url: "$(LOCALL)/students/{id}"
+        version: "1.0.0"
+  phase: "realized"
+  properties:
+    LOCALL:
+      value: "http://172.16.1.216:8085"
+      description: ""
+      encoded: false
+paths:
+  /estudiante:
+    get:
+      responses:
+        200:
+          description: "200 OK"
+    put:
+      responses:
+        200:
+          description: "200 OK"
+    delete:
+      responses:
+        200:
+          description: "200 OK"
+    post:
+      responses:
+        200:
+          description: "200 OK"
